@@ -25,17 +25,22 @@ Ops is a tool that allows developers to easily build, package, and deploy applic
 
 ### How to Run Applications in Nanos Using Ops
 
-* Install Ops:
+- Install Ops:
 
-	``` curl https://ops.city/get.sh -sSfL | sh```
+  ` curl https://ops.city/get.sh -sSfL | sh`
 
-* Load the required package (e.g., Python 3.10.6):
+- Install qemu and other dependencies:
 
-	```ops pkg load eyberg/python:3.10.6```
+  `sudo apt-get install qemu-kvm qemu-utils `
+  **Note:** May differ based on machine. Check [ops](https://docs.ops.city/ops/getting_started) docs.
 
-* Run an application inside Nanos:
+- Load the required package (e.g., Python 3.10.6):
 
-	```ops run -p 8080 eyberg/python:3.10.6 -c myconfig.json```
+  `ops pkg load eyberg/python:3.10.6`
+
+- Run an application inside Nanos:
+
+  `ops run -p 8080 eyberg/python:3.10.6 -c myconfig.json`
 
 ## Setting Up the Environment
 
@@ -43,7 +48,9 @@ To ensure compatibility, create a virtual Python environment using pyenv and ins
 
 1. Install Pyenv (if not installed)
 
-	```curl https://pyenv.run | bash```
+   `curl https://pyenv.run | bash`
+
+   **Note:** Follow instructions to add pyenv to path.
 
 2. Set Up Python 3.10.6 and Virtual Environment
 
@@ -55,11 +62,12 @@ To ensure compatibility, create a virtual Python environment using pyenv and ins
 
 3. Install Required Packages (Use the requirements.txt file to install dependencies):
 
-	```pip install -r requirements.txt```
+   `pip install -r requirements.txt`
 
 ## Directory Structure
 
 The repository is organized into different categories of applications:
+
 ```.
 |-- compute-intensive/      # Scripts focused on CPU-heavy tasks (e.g., mathematical computations)
 |-- io-bound/               # Scripts that involve disk or file I/O operations
@@ -69,6 +77,7 @@ The repository is organized into different categories of applications:
 |-- myconfig.json           # Configuration file for running Nanos unikernel (found in each directory)
 |-- README.md               # Project documentation
 ```
+
 ### Example: Running a Python Script in Nanos
 
 Here’s an example of running a script both locally and inside Nanos.
@@ -88,37 +97,37 @@ def compute():
 compute()
 ```
 
-* **Running Locally**
+- **Running Locally**
 
-	```python compute-intensive/script.py```
+  `python compute-intensive/script.py`
 
 **Running Inside Nanos**
 
 1. Build the unikernel package:
 
-	```ops pkg load eyberg/python:3.10.6```
+   `ops pkg load eyberg/python:3.10.6`
 
-2. Set up **myconfig.json** in the directory with the name of the script and other configuration. 
-	```
-	{
-	  "RunConfig": {
-	    "Verbose": true,
-	    "Ports": ["8083"]
-	  },
-	  "Env": {
-	    "Environment": "development",
-	    "TEST": "OPS"
-	  },
-	  "Args": ["script.py"],
-	  "Debugflags": ["trace:pf,threadrun,all", "debugsyscalls"]
-	}
-	```
+2. Set up **myconfig.json** in the directory with the name of the script and other configuration.
+
+   ```
+   {
+     "RunConfig": {
+       "Verbose": true,
+       "Ports": ["8083"]
+     },
+     "Env": {
+       "Environment": "development",
+       "TEST": "OPS"
+     },
+     "Args": ["script.py"],
+     "Debugflags": ["trace:pf,threadrun,all", "debugsyscalls"]
+   }
+   ```
 
 3. Run the script inside the unikernel:
 
-	```ops run -p 8080 eyberg/python:3.10.6 -c myconfig.json```
+   `ops run -p 8080 eyberg/python:3.10.6 -c myconfig.json`
 
 ## Conclusion
 
 This project aims to provide insights into the benefits and limitations of using Nanos for various types of workloads. By systematically measuring execution time, memory footprint, and usability challenges, we can better understand the trade-offs involved in using unikernels versus traditional OS environments.
-
