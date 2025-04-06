@@ -1,7 +1,8 @@
 import time
 import os
 import psutil
-import numpy as np
+# import numpy as np
+print("Compute Intensive Script")
 
 # Measure startup time
 start_time = time.time()
@@ -11,6 +12,8 @@ process = psutil.Process(os.getpid())
 memory_before = process.memory_info().rss / (1024 * 1024)  # Convert to MB
 
 # Function to generate prime numbers
+
+
 def generate_primes(n):
     primes = []
     for num in range(2, n):
@@ -24,15 +27,17 @@ def generate_primes(n):
     return primes
 
 # Function to perform matrix multiplication
-def matrix_multiplication(size):
-    A = np.random.randint(0, 100, (size, size))
-    B = np.random.randint(0, 100, (size, size))
-    return np.dot(A, B)
+# def matrix_multiplication(size):
+#     A = np.random.randint(0, 100, (size, size))
+#     B = np.random.randint(0, 100, (size, size))
+#     return np.dot(A, B)
 
-if "__name__" == __main__:
+
+if __name__ == "__main__":
+    print("Starting computation...")
     # Compute intensive tasks
     primes = generate_primes(100000)
-    matrix_result = matrix_multiplication(500)
+    # matrix_result = matrix_multiplication(500)
 
     # Measure execution time
     execution_time = time.time() - start_time

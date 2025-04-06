@@ -40,7 +40,7 @@ Ops is a tool that allows developers to easily build, package, and deploy applic
 
 - Run an application inside Nanos:
 
-  `ops run -p 8080 eyberg/python:3.10.6 -c myconfig.json`
+  `ops run eyberg/python:3.10.6 -c myconfig.json`
 
 ## Setting Up the Environment
 
@@ -52,7 +52,7 @@ To ensure compatibility, create a virtual Python environment using pyenv and ins
 
    **Note:** Follow instructions to add pyenv to path.
 
-2. Set Up Python 3.10.6 and Virtual Environment
+2. Set Up Python 3.10.6 and Virtual Environment (for each catagory you wish to test)
 
 ```
   pyenv install 3.10.6
@@ -64,6 +64,10 @@ To ensure compatibility, create a virtual Python environment using pyenv and ins
 
    `pip install -r requirements.txt`
 
+4. Set the path to the python directory as a sym link to allow ops to find the interperter:
+
+   `ln -s $(pyenv prefix nanovm) .venv`
+
 ## Directory Structure
 
 The repository is organized into different categories of applications:
@@ -73,7 +77,6 @@ The repository is organized into different categories of applications:
 |-- io-bound/               # Scripts that involve disk or file I/O operations
 |-- networking-based/       # Scripts that test network communication performance
 |-- general-purpose/        # Miscellaneous scripts for testing general workloads
-|-- requirements.txt        # Python dependencies
 |-- myconfig.json           # Configuration file for running Nanos unikernel (found in each directory)
 |-- README.md               # Project documentation
 ```
@@ -119,7 +122,8 @@ compute()
        "Environment": "development",
        "TEST": "OPS"
      },
-     "Args": ["script.py"],
+   	"Args": [".venv/bin/python", "script.py"],
+   	"Files": ["script.py", ".venv/"],
      "Debugflags": ["trace:pf,threadrun,all", "debugsyscalls"]
    }
    ```
