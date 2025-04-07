@@ -124,13 +124,18 @@ compute()
      },
    	"Args": [".venv/bin/python", "script.py"],
    	"Files": ["script.py", ".venv/"],
-     "Debugflags": ["trace:pf,threadrun,all", "debugsyscalls"]
+     "Debugflags": ["trace:pf,threadrun", "debugsyscalls"]
    }
    ```
 
 3. Run the script inside the unikernel:
 
    `ops run -p 8080 eyberg/python:3.10.6 -c myconfig.json`
+
+## Performance Measuring Scripts
+
+In each Section, you will find a script that is used to measure performance metrics of the nanos run against the hosts OS. they are called `run_script.py`.
+Each script will run the section related application against nanos and the hosts OS and measure cpu usage, memory usage and execution time. The data is saved in the subdirectory `metrics` as csv files for each run.
 
 ## Conclusion
 
