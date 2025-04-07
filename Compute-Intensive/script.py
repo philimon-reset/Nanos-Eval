@@ -1,9 +1,9 @@
+# import numpy as np
 import time
 
 
 # Measure startup time
 start_time = time.time()
-# import numpy as np
 
 
 def generate_primes(n):
