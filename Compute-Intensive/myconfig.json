@@ -11,5 +11,5 @@
   "MapDirs": {
     "./.venv/*": "/.local"
   },
-  "Debugflags": ["trace:pf,threadrun,all", "debugsyscalls"]
+  "Debugflags": ["trace:pf,threadrun", "debugsyscalls"]
 }

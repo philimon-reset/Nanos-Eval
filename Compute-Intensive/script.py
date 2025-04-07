@@ -1,17 +1,9 @@
 import time
-import os
-import psutil
-# import numpy as np
-print("Compute Intensive Script")
+
 
 # Measure startup time
 start_time = time.time()
-
-# Get process memory usage before computation
-process = psutil.Process(os.getpid())
-memory_before = process.memory_info().rss / (1024 * 1024)  # Convert to MB
-
-# Function to generate prime numbers
+# import numpy as np
 
 
 def generate_primes(n):
@@ -36,17 +28,11 @@ def generate_primes(n):
 if __name__ == "__main__":
     print("Starting computation...")
     # Compute intensive tasks
-    primes = generate_primes(100000)
+    primes = generate_primes(500000)
     # matrix_result = matrix_multiplication(500)
 
     # Measure execution time
     execution_time = time.time() - start_time
 
-    # Get memory usage after computation
-    memory_after = process.memory_info().rss / (1024 * 1024)  # Convert to MB
-    memory_used = memory_after - memory_before
-
     # Print results
-    print(f"Startup Time: {start_time - time.time()} seconds")
     print(f"Execution Time: {execution_time} seconds")
-    print(f"Memory Used: {memory_used:.2f} MB")
