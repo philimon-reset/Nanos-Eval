@@ -14,7 +14,7 @@ def monitor(original_process, running_process, start_mem_kb, start_timestamp, pr
 
     print(f"Monitoring {process_name} PID: {running_process.pid}")
     try:
-        while psutil.pid_exists(running_process.pid) and original_process.poll() is None:
+        while psutil.pid_exists(running_process.pid):
             cpu = running_process.cpu_percent(interval=.1)
             mem_kb = running_process.memory_info().rss
             timestamp = time.time()
