@@ -28,7 +28,7 @@ def generate_primes(n):
 if __name__ == "__main__":
     print("Starting computation...")
     # Compute intensive tasks
-    primes = generate_primes(500000)
+    primes = generate_primes(5000000)
     # matrix_result = matrix_multiplication(500)
 
     # Measure execution time
