@@ -1,0 +1,15 @@
+{
+  "RunConfig": {
+    "Verbose": true,
+    "Ports": ["8083"]
+  },
+  "Env": {
+    "Environment": "development",
+    "TEST": "OPS"
+  },
+  "Args": ["script.py"],
+  "MapDirs": {
+    "./.venv/*": "/.local"
+  },
+  "Debugflags": ["trace:pf,threadrun", "debugsyscalls"]
+}

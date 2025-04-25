@@ -2,3 +2,6 @@ psutil
 requests
 numpy
 pandas
+matplotlib
+docker
+
