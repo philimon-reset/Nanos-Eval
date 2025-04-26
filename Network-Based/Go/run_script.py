@@ -1,4 +1,5 @@
 import sys
+import threading
 import time
 import psutil
 import pandas as pd
@@ -7,6 +8,7 @@ import subprocess
 import docker
 import os
 from plot_usage import comparative_plot
+from test_server import run_benchmark
 
 num_cores = os.cpu_count()
 
@@ -18,8 +20,9 @@ def monitor(start_mem_kb, running_process, process_name):
         f.write("Time Stamp,CPU,Memory(KB)\n")
 
     print(f"Monitoring {process_name} PID: {running_process.pid}")
+    benchmark_thread = threading.Thread(target=run_benchmark, args=("nanos",))
     try:
-        while running_process.is_running():
+        while benchmark_thread.is_alive():
             cpu = running_process.cpu_percent(interval=0.5)
             mem_kb = running_process.memory_info().rss
             timestamp = time.time()
@@ -29,6 +32,7 @@ def monitor(start_mem_kb, running_process, process_name):
 
     except psutil.NoSuchProcess as e:
         print(f"Error: {e}")
+    running_process.kill()
     print(
         f"Monitoring {running_process.is_running()}")
     print(f"✅ Monitoring complete. Log saved to {log_file}")
@@ -36,34 +40,39 @@ def monitor(start_mem_kb, running_process, process_name):
     plot_metrics(log_file, process_name)
 
 
-def run_docker_and_monitor(process_name, image_name="run_script"):
+def run_docker_and_monitor(process_name, image_name="host_run"):
     log_file = f"metrics/raw_{process_name}_usage_log.csv"
     with open(log_file, "w") as f:
         f.write("Time,TotalUsage,SystemUsage,MemoryUsage\n")
 
+
     print(f"Monitoring {process_name} : Image Name {image_name}")
     client = docker.from_env()
+    benchmark_thread = threading.Thread(target=run_benchmark, args=("docker_host",))
 
     container = client.containers.run(
         image=image_name,
         detach=True,
         remove=True,
+        ports={'8081/tcp': '8081'},
         name="sdk_monitor_container"
     )
     start_timestamp = time.time()
     print(f"✅ Container started with ID: {container.id}")
 
     try:
-        for stat in container.stats(decode=True, stream=True):
-            cpu_total = stat["cpu_stats"]["cpu_usage"]["total_usage"]
-            system_total = stat["cpu_stats"]["system_cpu_usage"]
-            memory_usage = stat["memory_stats"]["usage"]
+        while benchmark_thread.is_alive():
+            for stat in container.stats(decode=True, stream=True):
+                cpu_total = stat["cpu_stats"]["cpu_usage"]["total_usage"]
+                system_total = stat["cpu_stats"]["system_cpu_usage"]
+                memory_usage = stat["memory_stats"]["usage"]
 
-            with open(log_file, "a") as f:
-                f.write(f"{time.time()},{cpu_total},{system_total},{memory_usage}\n")
+                with open(log_file, "a") as f:
+                    f.write(f"{time.time()},{cpu_total},{system_total},{memory_usage}\n")
 
     except Exception as e:
         print(f"❌ Error while collecting stats: {e}")
+    container.kill()
     process_docker_metrics(log_file, start_timestamp, process_name)
 
 
@@ -155,17 +164,16 @@ def run_script_and_monitor(command, ops_flag=False):
 
 
 if __name__ == "__main__":
-    ops_command = ["ops", "pkg", "load",
-                   "eyberg/python:3.10.6", "-c", "myconfig.json"]
+    ops_command = ["ops", "run", "-c", "myconfig.json", "nanos_run"]
     if len(sys.argv) > 1:
         command_type = sys.argv[1]
-        if command_type == "ops":
+        if command_type == "nanos":
             run_script_and_monitor(ops_command, True)
         else:
-            run_docker_and_monitor("docker")
+            run_docker_and_monitor("docker_host")
     else:
         run_script_and_monitor(ops_command, True)
-        run_docker_and_monitor("docker")
-    original_process_log = ("metrics/docker_usage_log.csv", "docker")
-    ops_process_log = ("metrics/ops_usage_log.csv", "ops")
-    comparative_plot(original_process_log, ops_process_log)
+        run_docker_and_monitor("docker_host")
+    # original_process_log = ("metrics/docker_usage_log.csv", "docker")
+    # ops_process_log = ("metrics/ops_usage_log.csv", "ops")
+    # comparative_plot(original_process_log, ops_process_log)
