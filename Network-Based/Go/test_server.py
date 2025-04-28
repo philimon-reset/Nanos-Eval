@@ -8,14 +8,17 @@ from math import log
 # CONFIG
 TARGETS = {
     "nanos": "http://localhost:8080",
-    "docker_host": "http://localhost:8081"
+    "docker_host": "http://localhost:8080"
 }
 
 LOADS = [
+    {"connection": 10, "duration": "10s", "warm_up": True}, # warm up
     {"connection": 10, "duration": "10s"},
     {"connection": 50, "duration": "10s"},
     {"connection": 100, "duration": "10s"},
-    {"connection": 200, "duration": "30s"},
+    {"connection": 10, "duration": "20s"},
+    {"connection": 50, "duration": "20s"},
+    {"connection": 100, "duration": "20s"},
 ]
 
 def run_wrk(target, connection, duration):
@@ -43,7 +46,7 @@ def parse_wrk_output(output):
     return metrics
 
 def run_benchmark(platform):
-    log_file = f"metrics/webserver_metrics_{platform}.csv"
+    log_file = f"metrics/webserver/webserver_metrics_{platform}.csv"
     with open(log_file, "w") as csvfile:
         fieldnames = ["connection", "duration", "requests_per_sec", "latency_avg", "errors"]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
@@ -55,7 +58,8 @@ def run_benchmark(platform):
                 "connection": load["connection"],
                 "duration": load["duration"],
             }
-            writer.writerow(metrics)
+            if not load.get("warm_up"):
+                writer.writerow(metrics)
             time.sleep(2)
     return False
 if __name__ == "__main__":

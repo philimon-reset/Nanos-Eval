@@ -7,12 +7,12 @@ WORKDIR /app
 COPY main.go ./
 
 # Build statically linked binary
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o webserver main.go
+RUN GOOS=linux go build -o webserver main.go
 
 # Stage 2: Minimal runtime
 FROM scratch
 
 COPY --from=builder /app/webserver /webserver
 
-EXPOSE 8081
+EXPOSE 8080
 ENTRYPOINT ["/webserver"]

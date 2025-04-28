@@ -23,7 +23,32 @@ def comparative_plot(first_process, second_process):
     plt.close()
     print(f"📈 Plot saved to {plot_path}")
 
+
+def comparetive_webserver_plot():
+    docker_df = pd.read_csv("metrics/webserver/webserver_metrics_docker_host.csv")
+    ops_df = pd.read_csv("metrics/webserver/webserver_metrics_nanos.csv")
+    plot_individual(docker_df, "Docker Host Metrics")
+    plot_individual(ops_df, "Nanos Metrics")
+
+def plot_individual(df, title):
+    plt.figure(figsize=(10, 6))
+    if df.select_dtypes(include=['number']).shape[1] == 1:
+        # If only one numeric column, line plot
+        df.plot(y=df.select_dtypes(include=['number']).columns[0], title=title)
+    else:
+        # If multiple numeric columns, line plot of all
+        df.plot(y=df.select_dtypes(include=['number']).columns, title=title)
+    plt.xlabel("Time Elapsed (s)")
+    plt.ylabel("Usage")
+    plt.legend()
+    plt.grid(True)
+    plt.tight_layout()
+    plot_path = f"metrics/plots/webservers/{title}_webserver_metric_plot.png"
+    plt.savefig(plot_path)
+    plt.close()
+
 if __name__ == "__main__":
-    original_process_log = ("metrics/docker_usage_log.csv", "docker")
+    original_process_log = ("metrics/docker_host_usage_log.csv", "docker")
     ops_process_log = ("metrics/ops_usage_log.csv", "ops")
     comparative_plot(original_process_log, ops_process_log)
+    comparetive_webserver_plot()

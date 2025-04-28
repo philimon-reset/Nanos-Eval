@@ -1,5 +1,5 @@
+import multiprocessing
 import sys
-import threading
 import time
 import psutil
 import pandas as pd
@@ -20,10 +20,11 @@ def monitor(start_mem_kb, running_process, process_name):
         f.write("Time Stamp,CPU,Memory(KB)\n")
 
     print(f"Monitoring {process_name} PID: {running_process.pid}")
-    benchmark_thread = threading.Thread(target=run_benchmark, args=("nanos",))
+    process = multiprocessing.Process(target=run_benchmark, args=("nanos",))
+    process.start()
     try:
-        while benchmark_thread.is_alive():
-            cpu = running_process.cpu_percent(interval=0.5)
+        while process.is_alive():
+            cpu = running_process.cpu_percent(interval=1)
             mem_kb = running_process.memory_info().rss
             timestamp = time.time()
 
@@ -48,31 +49,33 @@ def run_docker_and_monitor(process_name, image_name="host_run"):
 
     print(f"Monitoring {process_name} : Image Name {image_name}")
     client = docker.from_env()
-    benchmark_thread = threading.Thread(target=run_benchmark, args=("docker_host",))
-
     container = client.containers.run(
         image=image_name,
         detach=True,
         remove=True,
-        ports={'8081/tcp': '8081'},
+        cpu_count=2,
+        ports={'8080': '8080'},
         name="sdk_monitor_container"
     )
+    process = multiprocessing.Process(target=run_benchmark, args=("docker_host",))
+    process.start()
     start_timestamp = time.time()
     print(f"✅ Container started with ID: {container.id}")
 
     try:
-        while benchmark_thread.is_alive():
-            for stat in container.stats(decode=True, stream=True):
+        for stat in container.stats(decode=True, stream=True):
+            while process.is_alive():
                 cpu_total = stat["cpu_stats"]["cpu_usage"]["total_usage"]
                 system_total = stat["cpu_stats"]["system_cpu_usage"]
                 memory_usage = stat["memory_stats"]["usage"]
 
                 with open(log_file, "a") as f:
                     f.write(f"{time.time()},{cpu_total},{system_total},{memory_usage}\n")
+                time.sleep(1)
 
+            container.kill()
     except Exception as e:
         print(f"❌ Error while collecting stats: {e}")
-    container.kill()
     process_docker_metrics(log_file, start_timestamp, process_name)
 
 
@@ -174,6 +177,6 @@ if __name__ == "__main__":
     else:
         run_script_and_monitor(ops_command, True)
         run_docker_and_monitor("docker_host")
-    # original_process_log = ("metrics/docker_usage_log.csv", "docker")
+    # original_process_log = ("metrics/docker_host_usage_log.csv", "docker")
     # ops_process_log = ("metrics/ops_usage_log.csv", "ops")
     # comparative_plot(original_process_log, ops_process_log)

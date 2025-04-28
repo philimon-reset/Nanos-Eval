@@ -1,0 +1,3 @@
+connection,duration,requests_per_sec,latency_avg,errors
+10,10s,39231.06,140.68us,"  Socket errors: connect 0, read 400400, write 10467, timeout 0"
+50,10s,,,

@@ -66,7 +66,7 @@ To ensure compatibility, create a virtual Python environment using pyenv and ins
 
 4. Set the path to the python directory as a sym link to allow ops to find the interperter:
 
-   `ln -s $(pyenv prefix nanovm) .venv`
+   `ln -s $(pyenv prefix venv) .venv`
 
 ## Directory Structure
 
