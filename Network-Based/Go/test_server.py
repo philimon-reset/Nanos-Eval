@@ -1,4 +1,5 @@
 import subprocess
+import sys
 import time
 import csv
 from datetime import datetime
@@ -7,22 +8,25 @@ from math import log
 # CONFIG
 TARGETS = {
     "nanos": "http://localhost:8080",
-    "docker_host": "http://localhost:8081"
+    "docker": "http://localhost:8080"
 }
 
 LOADS = [
-    {"concurrency": 10, "duration": "10s"},
-    {"concurrency": 50, "duration": "10s"},
-    {"concurrency": 100, "duration": "10s"},
-    {"concurrency": 200, "duration": "30s"},
+    {"connection": 10, "duration": "10s", "warm_up": True},  # warm up
+    {"connection": 10, "duration": "10s"},
+    {"connection": 50, "duration": "10s"},
+    {"connection": 100, "duration": "10s"},
+    {"connection": 10, "duration": "20s"},
+    {"connection": 50, "duration": "20s"},
+    {"connection": 100, "duration": "20s"},
 ]
 
 
-def run_wrk(target, concurrency, duration):
+def run_wrk(target, connection, duration):
     cmd = [
         "wrk",
-        "-t", str(min(4, concurrency)),  # threads
-        "-c", str(concurrency),
+        "-t", str(min(4, connection)),  # threads
+        "-c", str(connection),
         "-d", duration,
         target
     ]
@@ -45,24 +49,27 @@ def parse_wrk_output(output):
     return metrics
 
 
-def main():
-    for platform, url in TARGETS.items():
-        log_file = f"metrics/webserver_metrics_{platform}.csv"
-        with open(log_file, "w") as csvfile:
-            fieldnames = ["concurrency", "duration",
-                          "requests_per_sec", "latency_avg", "errors"]
-            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-            writer.writeheader()
-            for load in LOADS:
-                output = run_wrk(url, load["concurrency"], load["duration"])
-                metrics = parse_wrk_output(output)
-                metrics |= {
-                    "concurrency": load["concurrency"],
-                    "duration": load["duration"],
-                }
+def run_benchmark(platform):
+    log_file = f"metrics/webserver/webserver_metrics_{platform}.csv"
+    with open(log_file, "w") as csvfile:
+        fieldnames = ["connection", "duration",
+                      "requests_per_sec", "latency_avg", "errors"]
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+        for load in LOADS:
+            output = run_wrk(TARGETS.get(platform),
+                             load["connection"], load["duration"])
+            metrics = parse_wrk_output(output)
+            metrics |= {
+                "connection": load["connection"],
+                "duration": load["duration"],
+            }
+            if not load.get("warm_up"):
                 writer.writerow(metrics)
-                time.sleep(2)
+            time.sleep(2)
+    return False
 
 
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) > 1:
+        run_benchmark(sys.argv[1])

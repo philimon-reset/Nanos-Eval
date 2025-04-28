@@ -2,7 +2,8 @@
   "RunConfig": {
     "Verbose": true,
     "Ports": ["8083"],
-    "Accel": true
+    "Accel": true,
+    "CPUs": 1
   },
   "Env": {
     "Environment": "development",
