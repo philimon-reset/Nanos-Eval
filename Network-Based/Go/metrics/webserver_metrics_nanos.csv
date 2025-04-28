@@ -1,0 +1,5 @@
+concurrency,duration,requests_per_sec,latency_avg,errors
+10,10s,874.73,9.07ms,
+50,10s,841.62,63.06ms,"  Socket errors: connect 0, read 0, write 0, timeout 5"
+100,10s,846.47,55.59ms,"  Socket errors: connect 0, read 0, write 0, timeout 9"
+200,30s,799.39,154.49ms,"  Socket errors: connect 0, read 0, write 0, timeout 30"
