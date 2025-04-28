@@ -17,6 +17,7 @@ LOADS = [
     {"concurrency": 200, "duration": "30s"},
 ]
 
+
 def run_wrk(target, concurrency, duration):
     cmd = [
         "wrk",
@@ -26,8 +27,10 @@ def run_wrk(target, concurrency, duration):
         target
     ]
     print(f"Running: {' '.join(cmd)}")
-    result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    result = subprocess.run(cmd, stdout=subprocess.PIPE,
+                            stderr=subprocess.PIPE, text=True)
     return result.stdout
+
 
 def parse_wrk_output(output):
     lines = output.splitlines()
@@ -41,11 +44,13 @@ def parse_wrk_output(output):
             metrics["errors"] = line
     return metrics
 
+
 def main():
     for platform, url in TARGETS.items():
         log_file = f"metrics/webserver_metrics_{platform}.csv"
         with open(log_file, "w") as csvfile:
-            fieldnames = ["concurrency", "duration", "requests_per_sec", "latency_avg", "errors"]
+            fieldnames = ["concurrency", "duration",
+                          "requests_per_sec", "latency_avg", "errors"]
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
             for load in LOADS:
@@ -57,6 +62,7 @@ def main():
                 }
                 writer.writerow(metrics)
                 time.sleep(2)
+
 
 if __name__ == "__main__":
     main()

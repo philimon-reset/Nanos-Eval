@@ -7,7 +7,6 @@ start_time = time.time()
 
 
 def generate_primes(n):
-    primes = []
     for num in range(2, n):
         is_prime = True
         for i in range(2, int(num ** 0.5) + 1):
@@ -15,8 +14,7 @@ def generate_primes(n):
                 is_prime = False
                 break
         if is_prime:
-            primes.append(num)
-    return primes
+            yield num  # Use a generator instead of appending to a list
 
 # Function to perform matrix multiplication
 # def matrix_multiplication(size):
@@ -28,7 +26,7 @@ def generate_primes(n):
 if __name__ == "__main__":
     print("Starting computation...")
     # Compute intensive tasks
-    primes = generate_primes(10000000)
+    primes = list(generate_primes(5000000))
     # matrix_result = matrix_multiplication(500)
 
     # Measure execution time

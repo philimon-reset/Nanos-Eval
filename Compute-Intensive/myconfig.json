@@ -1,7 +1,8 @@
 {
   "RunConfig": {
     "Verbose": true,
-    "Ports": ["8083"]
+    "Ports": ["8083"],
+    "Accel": true
   },
   "Env": {
     "Environment": "development",
@@ -9,7 +10,8 @@
   },
   "Args": ["script.py"],
   "MapDirs": {
-    "./.venv/*": "/.local"
+    "./.venv/bin/python": "/.local/bin/python",
+    "./.venv/lib": "/.local/lib"
   },
   "Debugflags": ["trace:pf,threadrun", "debugsyscalls"]
 }
