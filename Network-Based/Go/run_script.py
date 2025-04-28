@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import subprocess
 import docker
 import os
-from plot_usage import comparative_plot
+from plot_usage import compare_resource_usage_plot
 from test_server import run_benchmark
 
 num_cores = os.cpu_count()
@@ -185,4 +185,4 @@ if __name__ == "__main__":
     original_process_log = (
         "metrics/docker_usage_log.csv", "docker")
     ops_process_log = ("metrics/ops_usage_log.csv", "ops")
-    comparative_plot(original_process_log, ops_process_log)
+    compare_resource_usage_plot(original_process_log, ops_process_log)
