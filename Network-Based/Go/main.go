@@ -16,7 +16,7 @@ func main() {
 	}
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-// 		fmt.Printf("Received request: %s %s from %s.\n", r.Method, r.URL.Path, r.RemoteAddr)
+		// fmt.Printf("Received request: %s %s from %s.\n", r.Method, r.URL.Path, r.RemoteAddr)
 		fmt.Fprintf(w, "Welcome to my website!")
 	})
 

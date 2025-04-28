@@ -48,6 +48,7 @@ def run_docker_and_monitor(process_name, image_name="run_script"):
         image=image_name,
         detach=True,
         remove=True,
+        cpu_count=1,
         pid_mode="host",
         name="sdk_monitor_container"
     )

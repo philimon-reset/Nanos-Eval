@@ -1,0 +1,7 @@
+connection,duration,requests_per_sec,latency_avg,errors
+10,10s,26304.66,307.74us,
+50,10s,36245.34,1.40ms,
+100,10s,38879.32,2.68ms,
+10,20s,23210.49,345.77us,
+50,20s,41585.48,1.17ms,
+100,20s,43394.43,2.35ms,

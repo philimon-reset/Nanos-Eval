@@ -1,18 +1,13 @@
 {
   "RunConfig": {
     "Verbose": true,
-    "Ports": [
-      "8080"
-    ],
+    "Ports": ["8080"],
     "Accel": true,
-    "CPUs": 2
+    "CPUs": 1
   },
   "Env": {
     "Environment": "development",
     "TEST": "OPS"
   },
-  "Debugflags": [
-    "trace:pf,threadrun",
-    "debugsyscalls"
-  ]
+  "Debugflags": ["trace:pf,threadrun", "debugsyscalls"]
 }

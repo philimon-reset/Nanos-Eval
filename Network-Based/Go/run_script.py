@@ -46,18 +46,18 @@ def run_docker_and_monitor(process_name, image_name="host_run"):
     with open(log_file, "w") as f:
         f.write("Time,TotalUsage,SystemUsage,MemoryUsage\n")
 
-
     print(f"Monitoring {process_name} : Image Name {image_name}")
     client = docker.from_env()
     container = client.containers.run(
         image=image_name,
         detach=True,
         remove=True,
-        cpu_count=2,
+        cpu_count=1,
         ports={'8080': '8080'},
         name="sdk_monitor_container"
     )
-    process = multiprocessing.Process(target=run_benchmark, args=("docker_host",))
+    process = multiprocessing.Process(
+        target=run_benchmark, args=("docker",))
     process.start()
     start_timestamp = time.time()
     print(f"✅ Container started with ID: {container.id}")
@@ -70,7 +70,8 @@ def run_docker_and_monitor(process_name, image_name="host_run"):
                 memory_usage = stat["memory_stats"]["usage"]
 
                 with open(log_file, "a") as f:
-                    f.write(f"{time.time()},{cpu_total},{system_total},{memory_usage}\n")
+                    f.write(
+                        f"{time.time()},{cpu_total},{system_total},{memory_usage}\n")
                 time.sleep(1)
 
             container.kill()
@@ -96,7 +97,8 @@ def process_docker_metrics(raw_log, start_timestamp, process_name):
     df.rename(columns={"Time": "Time Elapsed"}, inplace=True)
 
     final_log = f"metrics/{process_name}_usage_log.csv"
-    df[["Time Elapsed", "CPU%", "Memory(KB)", "Memory(MB)"]].to_csv(final_log, index=False)
+    df[["Time Elapsed", "CPU%", "Memory(KB)", "Memory(MB)"]].to_csv(
+        final_log, index=False)
     print(f"📄 Processed metrics saved to {final_log}")
 
     plot_metrics(final_log, process_name)
@@ -108,10 +110,12 @@ def process_metrics(raw_log, start_mem_kb, start_timestamp, process_name):
     df["Memory(MB)"] = df["Memory(KB)"] // 1024
     df["Time Stamp"] = df["Time Stamp"] - start_timestamp
 
-    df.rename(columns={"CPU": "CPU%", "Time Stamp": "Time Elapsed"}, inplace=True)
+    df.rename(columns={"CPU": "CPU%",
+              "Time Stamp": "Time Elapsed"}, inplace=True)
 
     final_log = f"metrics/{process_name}_usage_log.csv"
-    df[["Time Elapsed", "CPU%", "Memory(KB)", "Memory(MB)"]].to_csv(final_log, index=False)
+    df[["Time Elapsed", "CPU%", "Memory(KB)", "Memory(MB)"]].to_csv(
+        final_log, index=False)
     print(f"📄 Processed metrics saved to {final_log}")
     plot_metrics(final_log, process_name)
 
@@ -120,8 +124,10 @@ def plot_metrics(log_file, process_name):
     df = pd.read_csv(log_file)
 
     plt.figure(figsize=(12, 6))
-    plt.plot(df["Time Elapsed"], df["CPU%"], label=f"{process_name} CPU Usage (%)")
-    plt.plot(df["Time Elapsed"], df["Memory(MB)"], label=f"{process_name} Memory Usage (MB)")
+    plt.plot(df["Time Elapsed"], df["CPU%"],
+             label=f"{process_name} CPU Usage (%)")
+    plt.plot(df["Time Elapsed"], df["Memory(MB)"],
+             label=f"{process_name} Memory Usage (MB)")
 
     plt.title(f"{process_name} Resource Usage Over Time")
     plt.xlabel("Time Elapsed (s)")
@@ -161,7 +167,6 @@ def run_script_and_monitor(command, ops_flag=False):
             return
         starting_memory = process.memory_info().rss
 
-
     process = psutil.Process(running_pid)
     monitor(starting_memory, process, command[0])
 
@@ -173,10 +178,11 @@ if __name__ == "__main__":
         if command_type == "nanos":
             run_script_and_monitor(ops_command, True)
         else:
-            run_docker_and_monitor("docker_host")
+            run_docker_and_monitor("docker")
     else:
         run_script_and_monitor(ops_command, True)
-        run_docker_and_monitor("docker_host")
-    # original_process_log = ("metrics/docker_host_usage_log.csv", "docker")
-    # ops_process_log = ("metrics/ops_usage_log.csv", "ops")
-    # comparative_plot(original_process_log, ops_process_log)
+        run_docker_and_monitor("docker")
+    original_process_log = (
+        "metrics/docker_usage_log.csv", "docker")
+    ops_process_log = ("metrics/ops_usage_log.csv", "ops")
+    comparative_plot(original_process_log, ops_process_log)

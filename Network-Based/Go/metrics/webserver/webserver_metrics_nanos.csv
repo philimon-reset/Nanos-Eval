@@ -1,3 +1,7 @@
 connection,duration,requests_per_sec,latency_avg,errors
-10,10s,39231.06,140.68us,"  Socket errors: connect 0, read 400400, write 10467, timeout 0"
-50,10s,,,
+10,10s,29484.87,264.86us,
+50,10s,31830.5,11.18ms,"  Socket errors: connect 0, read 0, write 0, timeout 7"
+100,10s,32185.43,10.12ms,"  Socket errors: connect 0, read 0, write 0, timeout 7"
+10,20s,28578.05,277.29us,
+50,20s,32367.97,5.49ms,"  Socket errors: connect 0, read 0, write 0, timeout 7"
+100,20s,32292.38,7.32ms,"  Socket errors: connect 0, read 0, write 0, timeout 10"

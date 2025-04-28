@@ -8,11 +8,11 @@ from math import log
 # CONFIG
 TARGETS = {
     "nanos": "http://localhost:8080",
-    "docker_host": "http://localhost:8080"
+    "docker": "http://localhost:8080"
 }
 
 LOADS = [
-    {"connection": 10, "duration": "10s", "warm_up": True}, # warm up
+    {"connection": 10, "duration": "10s", "warm_up": True},  # warm up
     {"connection": 10, "duration": "10s"},
     {"connection": 50, "duration": "10s"},
     {"connection": 100, "duration": "10s"},
@@ -20,6 +20,7 @@ LOADS = [
     {"connection": 50, "duration": "20s"},
     {"connection": 100, "duration": "20s"},
 ]
+
 
 def run_wrk(target, connection, duration):
     cmd = [
@@ -30,8 +31,10 @@ def run_wrk(target, connection, duration):
         target
     ]
     print(f"Running: {' '.join(cmd)}")
-    result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    result = subprocess.run(cmd, stdout=subprocess.PIPE,
+                            stderr=subprocess.PIPE, text=True)
     return result.stdout
+
 
 def parse_wrk_output(output):
     lines = output.splitlines()
@@ -45,14 +48,17 @@ def parse_wrk_output(output):
             metrics["errors"] = line
     return metrics
 
+
 def run_benchmark(platform):
     log_file = f"metrics/webserver/webserver_metrics_{platform}.csv"
     with open(log_file, "w") as csvfile:
-        fieldnames = ["connection", "duration", "requests_per_sec", "latency_avg", "errors"]
+        fieldnames = ["connection", "duration",
+                      "requests_per_sec", "latency_avg", "errors"]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
         for load in LOADS:
-            output = run_wrk(TARGETS.get(platform), load["connection"], load["duration"])
+            output = run_wrk(TARGETS.get(platform),
+                             load["connection"], load["duration"])
             metrics = parse_wrk_output(output)
             metrics |= {
                 "connection": load["connection"],
@@ -62,6 +68,8 @@ def run_benchmark(platform):
                 writer.writerow(metrics)
             time.sleep(2)
     return False
+
+
 if __name__ == "__main__":
     if len(sys.argv) > 1:
         run_benchmark(sys.argv[1])

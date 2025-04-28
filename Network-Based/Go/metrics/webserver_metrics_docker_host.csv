@@ -1,5 +1,0 @@
-concurrency,duration,requests_per_sec,latency_avg,errors
-10,10s,16287.96,524.25us,
-50,10s,27265.78,1.81ms,
-100,10s,30549.43,3.31ms,
-200,30s,32084.52,6.23ms,
