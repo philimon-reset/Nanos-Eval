@@ -14,11 +14,37 @@ TARGETS = {
 LOADS = [
     {"connection": 10, "duration": "10s", "warm_up": True},  # warm up
     {"connection": 10, "duration": "10s"},
+    {"connection": 10, "duration": "10s"},
+    {"connection": 10, "duration": "10s"},
+    {"connection": 10, "duration": "10s"},
+    {"connection": 10, "duration": "10s"},
+    {"connection": 10, "duration": "10s"},
+    {"connection": 10, "duration": "10s"},
+    {"connection": 10, "duration": "10s"},
+    {"connection": 10, "duration": "10s"},
+    {"connection": 10, "duration": "10s"},
+
     {"connection": 50, "duration": "10s"},
+    {"connection": 50, "duration": "10s"},
+    {"connection": 50, "duration": "10s"},
+    {"connection": 50, "duration": "10s"},
+    {"connection": 50, "duration": "10s"},
+    {"connection": 50, "duration": "10s"},
+    {"connection": 50, "duration": "10s"},
+    {"connection": 50, "duration": "10s"},
+    {"connection": 50, "duration": "10s"},
+    {"connection": 50, "duration": "10s"},
+
     {"connection": 100, "duration": "10s"},
-    {"connection": 10, "duration": "20s"},
-    {"connection": 50, "duration": "20s"},
-    {"connection": 100, "duration": "20s"},
+    {"connection": 100, "duration": "10s"},
+    {"connection": 100, "duration": "10s"},
+    {"connection": 100, "duration": "10s"},
+    {"connection": 100, "duration": "10s"},
+    {"connection": 100, "duration": "10s"},
+    {"connection": 100, "duration": "10s"},
+    {"connection": 100, "duration": "10s"},
+    {"connection": 100, "duration": "10s"},
+    {"connection": 100, "duration": "10s"}
 ]
 
 
@@ -57,16 +83,17 @@ def run_benchmark(platform):
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
         for load in LOADS:
-            output = run_wrk(TARGETS.get(platform),
-                             load["connection"], load["duration"])
-            metrics = parse_wrk_output(output)
-            metrics |= {
-                "connection": load["connection"],
-                "duration": load["duration"],
-            }
-            if not load.get("warm_up"):
-                writer.writerow(metrics)
-            time.sleep(2)
+            for _ in range(10):
+                output = run_wrk(TARGETS.get(platform),
+                                 load["connection"], load["duration"])
+                metrics = parse_wrk_output(output)
+                metrics |= {
+                    "connection": load["connection"],
+                    "duration": load["duration"],
+                }
+                if not load.get("warm_up"):
+                    writer.writerow(metrics)
+                time.sleep(1)
     return False
 
 

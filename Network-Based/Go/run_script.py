@@ -52,7 +52,7 @@ def run_docker_and_monitor(process_name, image_name="host_run"):
         image=image_name,
         detach=True,
         remove=True,
-        cpu_count=1,
+        cpu_count=4,
         ports={'8080': '8080'},
         name="sdk_monitor_container"
     )
