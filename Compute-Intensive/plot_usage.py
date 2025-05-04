@@ -25,7 +25,7 @@ def comparative_plot(first_process, second_process):
     second_df = pd.read_csv(second_process[0])
 
     # Plot CPU usage
-    cpu_plot_path = f"metrics/plots/({sys.platform})/{first_process[1]}_vs_{second_process[1]}_cpu_usage.png"
+    cpu_plot_path = f"metrics/plots/comparitive/{first_process[1]}_vs_{second_process[1]}_cpu_usage.png"
     plot_metric(
         first_df, second_df,
         x_col="Time Elapsed", y_col="CPU%",
@@ -37,7 +37,7 @@ def comparative_plot(first_process, second_process):
     )
 
     # Plot Memory usage
-    memory_plot_path = f"metrics/plots/({sys.platform})/{first_process[1]}_vs_{second_process[1]}_memory_usage.png"
+    memory_plot_path = f"metrics/plots/comparitive/{first_process[1]}_vs_{second_process[1]}_memory_usage.png"
     plot_metric(
         first_df, second_df,
         x_col="Time Elapsed", y_col="Memory(MB)",
@@ -51,6 +51,6 @@ def comparative_plot(first_process, second_process):
 
 if __name__ == "__main__":
     original_process_log = (
-        f"metrics/({sys.platform})/docker_usage_log.csv", "docker")
-    ops_process_log = (f"metrics/({sys.platform})/ops_usage_log.csv", "ops")
-    comparative_plot(original_process_log, ops_process_log)
+        "metrics/docker_usage_log.csv", "docker")
+    nanos_process_log = ("metrics/nanos_usage_log.csv", "nanos")
+    comparative_plot(original_process_log, nanos_process_log)

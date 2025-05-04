@@ -1,31 +1,31 @@
 connection,duration,requests_per_sec,latency_avg,errors
-10,10s,32144.33,450.17us,
-10,10s,31629.96,253.84us,
-10,10s,31309.98,252.94us,
-10,10s,31549.0,250.11us,
-10,10s,31689.89,253.35us,
-10,10s,30740.64,256.66us,
-10,10s,29601.15,268.01us,
-10,10s,30792.62,254.29us,
-10,10s,30764.69,265.53us,
-10,10s,30178.99,264.00us,
-50,10s,45327.7,14.65ms,"  Socket errors: connect 0, read 0, write 0, timeout 5"
-50,10s,46362.26,13.70ms,"  Socket errors: connect 0, read 0, write 0, timeout 4"
-50,10s,45410.88,13.53ms,"  Socket errors: connect 0, read 0, write 0, timeout 6"
-50,10s,48176.56,11.00ms,"  Socket errors: connect 0, read 0, write 0, timeout 3"
-50,10s,44316.75,8.09ms,"  Socket errors: connect 0, read 0, write 0, timeout 4"
-50,10s,45750.12,9.88ms,"  Socket errors: connect 0, read 0, write 0, timeout 5"
-50,10s,46017.39,15.06ms,"  Socket errors: connect 0, read 0, write 0, timeout 8"
-50,10s,43844.09,13.07ms,"  Socket errors: connect 0, read 0, write 0, timeout 5"
-50,10s,46445.9,14.96ms,"  Socket errors: connect 0, read 0, write 0, timeout 6"
-50,10s,46217.02,13.34ms,"  Socket errors: connect 0, read 0, write 0, timeout 4"
-100,10s,50278.35,12.43ms,"  Socket errors: connect 0, read 0, write 0, timeout 12"
-100,10s,49699.19,9.56ms,"  Socket errors: connect 0, read 0, write 0, timeout 8"
-100,10s,49770.51,10.75ms,"  Socket errors: connect 0, read 0, write 0, timeout 7"
-100,10s,48515.79,4.94ms,"  Socket errors: connect 0, read 0, write 0, timeout 6"
-100,10s,49092.12,10.24ms,"  Socket errors: connect 0, read 0, write 0, timeout 7"
-100,10s,48696.93,7.21ms,"  Socket errors: connect 0, read 0, write 0, timeout 6"
-100,10s,47772.28,6.44ms,"  Socket errors: connect 0, read 0, write 0, timeout 9"
-100,10s,49111.41,7.89ms,"  Socket errors: connect 0, read 0, write 0, timeout 6"
-100,10s,50271.4,12.33ms,"  Socket errors: connect 0, read 0, write 0, timeout 6"
-100,10s,48061.8,5.45ms,"  Socket errors: connect 0, read 0, write 0, timeout 8"
+10,10s,31605.68,246.83us,
+10,10s,32235.23,245.68us,
+10,10s,31419.43,255.73us,
+10,10s,32467.66,248.29us,
+10,10s,32186.99,250.53us,
+10,10s,32320.6,248.09us,
+10,10s,32402.63,249.21us,
+10,10s,32162.62,255.13us,
+10,10s,32219.02,249.06us,
+10,10s,32376.08,250.37us,
+50,10s,47248.78,12.36ms,"  Socket errors: connect 0, read 0, write 0, timeout 7"
+50,10s,46900.67,13.57ms,"  Socket errors: connect 0, read 0, write 0, timeout 6"
+50,10s,46323.39,12.04ms,"  Socket errors: connect 0, read 0, write 0, timeout 5"
+50,10s,49428.72,8.05ms,"  Socket errors: connect 0, read 0, write 0, timeout 2"
+50,10s,47693.79,11.92ms,"  Socket errors: connect 0, read 0, write 0, timeout 7"
+50,10s,48504.8,16.32ms,"  Socket errors: connect 0, read 0, write 0, timeout 3"
+50,10s,47525.29,12.37ms,"  Socket errors: connect 0, read 0, write 0, timeout 5"
+50,10s,48658.86,14.64ms,"  Socket errors: connect 0, read 0, write 0, timeout 4"
+50,10s,47471.61,11.79ms,"  Socket errors: connect 0, read 0, write 0, timeout 6"
+50,10s,46716.76,8.90ms,"  Socket errors: connect 0, read 0, write 0, timeout 4"
+100,10s,52149.71,7.85ms,"  Socket errors: connect 0, read 0, write 0, timeout 6"
+100,10s,50744.04,8.86ms,"  Socket errors: connect 0, read 0, write 0, timeout 6"
+100,10s,51654.52,12.97ms,"  Socket errors: connect 0, read 0, write 0, timeout 9"
+100,10s,49972.94,15.13ms,"  Socket errors: connect 0, read 0, write 0, timeout 8"
+100,10s,51115.54,10.71ms,"  Socket errors: connect 0, read 0, write 0, timeout 6"
+100,10s,50178.58,10.73ms,"  Socket errors: connect 0, read 0, write 0, timeout 7"
+100,10s,49647.94,6.24ms,"  Socket errors: connect 0, read 0, write 0, timeout 10"
+100,10s,51103.27,4.99ms,"  Socket errors: connect 0, read 0, write 0, timeout 4"
+100,10s,50864.01,9.29ms,"  Socket errors: connect 0, read 0, write 0, timeout 8"
+100,10s,51237.33,9.18ms,"  Socket errors: connect 0, read 0, write 0, timeout 10"

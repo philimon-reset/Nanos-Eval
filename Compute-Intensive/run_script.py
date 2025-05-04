@@ -8,12 +8,10 @@ import docker
 import os
 from plot_usage import comparative_plot
 
-num_cores = os.cpu_count()
-
 
 def monitor(start_mem_kb, running_process, process_name):
     start_timestamp = time.time()
-    log_file = f"metrics/({sys.platform})/{process_name}_usage_log.csv"
+    log_file = f"metrics/{process_name}_usage_log.csv"
     with open(log_file, "w") as f:
         f.write("Time Stamp,CPU,Memory(KB)\n")
 
@@ -37,61 +35,23 @@ def monitor(start_mem_kb, running_process, process_name):
 
 
 def run_docker_and_monitor(process_name, image_name="run_script"):
-    log_file = f"metrics/({sys.platform})/raw_{process_name}_usage_log.csv"
-    with open(log_file, "w") as f:
-        f.write("Time,TotalUsage,SystemUsage,MemoryUsage\n")
-
-    print(f"Monitoring {process_name} : Image Name {image_name}")
+    print(f"Starting {process_name} : Image Name {image_name}")
     client = docker.from_env()
 
     container = client.containers.run(
         image=image_name,
         detach=True,
         remove=True,
-        cpu_count=1,
+        cpu_count=4,
+        mem_limit="2g",
         pid_mode="host",
         name="sdk_monitor_container"
     )
-    start_timestamp = time.time()
-    print(f"✅ Container started with ID: {container.id}")
 
-    try:
-        for stat in container.stats(decode=True, stream=True):
-            cpu_total = stat["cpu_stats"]["cpu_usage"]["total_usage"]
-            system_total = stat["cpu_stats"]["system_cpu_usage"]
-            memory_usage = stat["memory_stats"]["usage"]
-
-            with open(log_file, "a") as f:
-                f.write(
-                    f"{time.time()},{cpu_total},{system_total},{memory_usage}\n")
-
-    except Exception as e:
-        print(f"❌ Error while collecting stats: {e}")
-    process_docker_metrics(log_file, start_timestamp, process_name)
-
-
-def process_docker_metrics(raw_log, start_timestamp, process_name):
-    df = pd.read_csv(raw_log)
-
-    df["CPU%"] = 0.0
-    for i in range(1, len(df)):
-        cpu_delta = df.loc[i, "TotalUsage"] - df.loc[i - 1, "TotalUsage"]
-        sys_delta = df.loc[i, "SystemUsage"] - df.loc[i - 1, "SystemUsage"]
-        if sys_delta > 0:
-            df.loc[i, "CPU%"] = (cpu_delta / sys_delta) * num_cores * 100.0
-
-    df["Memory(KB)"] = df["MemoryUsage"] // 1024
-    df["Memory(MB)"] = df["Memory(KB)"] // 1024
-    df["Time"] = df["Time"] - start_timestamp
-
-    df.rename(columns={"Time": "Time Elapsed"}, inplace=True)
-
-    final_log = f"metrics/({sys.platform})/{process_name}_usage_log.csv"
-    df[["Time Elapsed", "CPU%", "Memory(KB)", "Memory(MB)"]].to_csv(
-        final_log, index=False)
-    print(f"📄 Processed metrics saved to {final_log}")
-
-    plot_metrics(final_log, process_name)
+    container.reload()
+    container_process = psutil.Process(container.attrs["State"]["Pid"])
+    monitor(container_process.memory_info().rss,
+            container_process, process_name)
 
 
 def process_metrics(raw_log, start_mem_kb, start_timestamp, process_name):
@@ -103,7 +63,7 @@ def process_metrics(raw_log, start_mem_kb, start_timestamp, process_name):
     df.rename(columns={"CPU": "CPU%",
               "Time Stamp": "Time Elapsed"}, inplace=True)
 
-    final_log = f"metrics/({sys.platform})/{process_name}_usage_log.csv"
+    final_log = f"metrics/{process_name}_usage_log.csv"
     df[["Time Elapsed", "CPU%", "Memory(KB)", "Memory(MB)"]].to_csv(
         final_log, index=False)
     print(f"📄 Processed metrics saved to {final_log}")
@@ -126,13 +86,13 @@ def plot_metrics(log_file, process_name):
     plt.grid(True)
     plt.tight_layout()
 
-    plot_path = f"metrics/plots/({sys.platform})/{process_name}_usage_plot.png"
+    plot_path = f"metrics/plots/{process_name}_usage_plot.png"
     plt.savefig(plot_path)
     plt.close()
     print(f"📈 Plot saved to {plot_path}")
 
 
-def run_script_and_monitor(command, ops_flag=False):
+def run_script_and_monitor(command):
     original_process = subprocess.Popen(command)
     running_pid = original_process.pid
     process = psutil.Process(running_pid)
@@ -143,22 +103,23 @@ def run_script_and_monitor(command, ops_flag=False):
         qemu_process_name = "qemu-system-x86_64"
     else:
         qemu_process_name = "qemu-system-aarch64"
-    if ops_flag:
-        qemu_proc = None
-        while qemu_proc is None:
-            filtered_proc = filter(
-                lambda proc: proc.info["ppid"] == running_pid and qemu_process_name in proc.info["name"],
-                psutil.process_iter(attrs=["ppid", "name"]))
-            qemu_proc = next(filtered_proc, None)
-        running_pid = qemu_proc.pid
-        if running_pid is None:
-            print("QEMU process not found!")
-            original_process.terminate()
-            return
-        starting_memory = process.memory_info().rss
+
+
+    qemu_proc = None
+    while qemu_proc is None:
+        filtered_proc = filter(
+            lambda proc: proc.info["ppid"] == running_pid and qemu_process_name in proc.info["name"],
+            psutil.process_iter(attrs=["ppid", "name"]))
+        qemu_proc = next(filtered_proc, None)
+    running_pid = qemu_proc.pid
+    if running_pid is None:
+        print("QEMU process not found!")
+        original_process.terminate()
+        return
+    starting_memory = process.memory_info().rss
 
     process = psutil.Process(running_pid)
-    monitor(starting_memory, process, command[0])
+    monitor(starting_memory, process, "nanos")
 
 
 if __name__ == "__main__":
@@ -166,14 +127,14 @@ if __name__ == "__main__":
                    "eyberg/python:3.10.6", "-c", "myconfig.json"]
     if len(sys.argv) > 1:
         command_type = sys.argv[1]
-        if command_type == "ops":
-            run_script_and_monitor(ops_command, True)
+        if command_type == "nanos":
+            run_script_and_monitor(ops_command)
         else:
             run_docker_and_monitor("docker")
     else:
-        run_script_and_monitor(ops_command, True)
+        run_script_and_monitor(ops_command)
         run_docker_and_monitor("docker")
     original_process_log = (
-        f"metrics/({sys.platform})/docker_usage_log.csv", "docker")
-    ops_process_log = (f"metrics/({sys.platform})/ops_usage_log.csv", "ops")
-    comparative_plot(original_process_log, ops_process_log)
+        "metrics/docker_usage_log.csv", "docker")
+    nanos_process_log = ("metrics/nanos_usage_log.csv", "nanos")
+    comparative_plot(original_process_log, nanos_process_log)
