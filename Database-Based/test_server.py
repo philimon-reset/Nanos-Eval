@@ -39,7 +39,7 @@ def run_redis_benchmark(host, port, connections, requests):
 
 def run_benchmark(platform):
     target = TARGETS.get(platform)
-    log_file = f"metrics/database/redis_metrics_{platform}.csv"
+    log_file = f"metrics/database/database_metrics_{platform}.csv"
     with open(log_file, "w", newline="") as csvfile:
         writer = csv.DictWriter(
             csvfile, fieldnames=FIELDNAMES)
