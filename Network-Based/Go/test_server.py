@@ -12,39 +12,11 @@ TARGETS = {
 }
 
 LOADS = [
-    {"connection": 10, "duration": "10s", "warm_up": True},  # warm up
-    {"connection": 10, "duration": "10s"},
-    {"connection": 10, "duration": "10s"},
-    {"connection": 10, "duration": "10s"},
-    {"connection": 10, "duration": "10s"},
-    {"connection": 10, "duration": "10s"},
-    {"connection": 10, "duration": "10s"},
-    {"connection": 10, "duration": "10s"},
-    {"connection": 10, "duration": "10s"},
-    {"connection": 10, "duration": "10s"},
-    {"connection": 10, "duration": "10s"},
-
-    {"connection": 50, "duration": "10s"},
-    {"connection": 50, "duration": "10s"},
-    {"connection": 50, "duration": "10s"},
-    {"connection": 50, "duration": "10s"},
-    {"connection": 50, "duration": "10s"},
-    {"connection": 50, "duration": "10s"},
-    {"connection": 50, "duration": "10s"},
-    {"connection": 50, "duration": "10s"},
-    {"connection": 50, "duration": "10s"},
-    {"connection": 50, "duration": "10s"},
-
-    {"connection": 100, "duration": "10s"},
-    {"connection": 100, "duration": "10s"},
-    {"connection": 100, "duration": "10s"},
-    {"connection": 100, "duration": "10s"},
-    {"connection": 100, "duration": "10s"},
-    {"connection": 100, "duration": "10s"},
-    {"connection": 100, "duration": "10s"},
-    {"connection": 100, "duration": "10s"},
-    {"connection": 100, "duration": "10s"},
-    {"connection": 100, "duration": "10s"}
+    {"connection": 10, "duration": "10s", "warm_up": True}  # warm up
+] + [
+    {"connection": conn, "duration": "10s"}
+    for conn in [10, 50, 100]
+    for _ in range(10)
 ]
 
 
