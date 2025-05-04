@@ -1,5 +1,5 @@
-FROM python:3.10-slim
-WORKDIR /Compute-Intensive
-COPY . .
-RUN pip install --no-cache-dir -r requirements.txt
-CMD ["python", "script.py"]
+FROM nginx:alpine
+
+RUN rm -rf /usr/share/nginx/html/*
+
+COPY ./index.html /usr/share/nginx/html/

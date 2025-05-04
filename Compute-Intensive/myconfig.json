@@ -3,7 +3,8 @@
     "Verbose": true,
     "Ports": ["8083"],
     "Accel": true,
-    "CPUs": 1
+    "CPUs": 4,
+    "Memory": "2G"
   },
   "Env": {
     "Environment": "development",

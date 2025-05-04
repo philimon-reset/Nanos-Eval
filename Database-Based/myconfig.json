@@ -1,0 +1,14 @@
+{
+  "RunConfig": {
+    "Verbose": true,
+    "Ports": ["6379"],
+    "Accel": true,
+    "CPUs": 4,
+    "Memory": "2G"
+  },
+  "Env": {
+    "Environment": "development",
+    "TEST": "OPS"
+  },
+  "Debugflags": ["trace:pf,threadrun", "debugsyscalls"]
+}

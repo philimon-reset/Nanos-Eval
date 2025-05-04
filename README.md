@@ -42,6 +42,8 @@ Ops is a tool that allows developers to easily build, package, and deploy applic
 
   `ops run eyberg/python:3.10.6 -c myconfig.json`
 
+- For Comparisons, I used docker containers, So docker must be installed.
+
 ## Setting Up the Environment
 
 To ensure compatibility, create a virtual Python environment using pyenv and install dependencies.
@@ -68,15 +70,18 @@ To ensure compatibility, create a virtual Python environment using pyenv and ins
 
    `ln -s $(pyenv prefix venv) .venv`
 
+5. For Network and Database based tests, we need to build the docker image before running `run_script`
+   |-- database-based/ `docker build -t host_redis_run .`
+   |-- networking-based/Go `docker build -t host_go_run .`
+
 ## Directory Structure
 
 The repository is organized into different categories of applications:
 
 ```.
 |-- compute-intensive/      # Scripts focused on CPU-heavy tasks (e.g., mathematical computations)
-|-- io-bound/               # Scripts that involve disk or file I/O operations
-|-- networking-based/       # Scripts that test network communication performance
-|-- general-purpose/        # Miscellaneous scripts for testing general workloads
+|-- database-based/               # Scripts that involve disk or file I/O operations
+|-- networking-based/Go       # Scripts that test network communication performance
 |-- myconfig.json           # Configuration file for running Nanos unikernel (found in each directory)
 |-- README.md               # Project documentation
 ```
