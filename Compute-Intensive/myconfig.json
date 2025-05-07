@@ -6,10 +6,6 @@
     "CPUs": 4,
     "Memory": "2G"
   },
-  "Env": {
-    "Environment": "development",
-    "TEST": "OPS"
-  },
   "Args": ["script.py"],
   "MapDirs": {
     "./.venv/bin/python": "/.local/bin/python",
@@ -17,3 +13,7 @@
   },
   "Debugflags": ["trace:pf,threadrun", "debugsyscalls"]
 }
+
+
+
+
