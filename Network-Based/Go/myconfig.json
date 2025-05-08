@@ -2,7 +2,6 @@
   "RunConfig": {
     "Verbose": true,
     "Ports": ["8080"],
-    "Accel": true,
     "CPUs": 4,
     "Memory": "2G"
   },

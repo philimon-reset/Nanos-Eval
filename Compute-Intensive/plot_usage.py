@@ -2,6 +2,8 @@ import sys
 import matplotlib.pyplot as plt
 import pandas as pd
 
+plt.rcParams.update({'font.size': 18})
+
 
 def plot_metric(df1, df2, x_col, y_col, labels, title, ylabel, plot_path):
     """Reusable function to plot a metric."""

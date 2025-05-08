@@ -64,7 +64,7 @@ def run_benchmark(platform):
             }
             if not load.get("warm_up"):
                 writer.writerow(metrics)
-            time.sleep(1)
+            time.sleep(3)
     return False
 
 
