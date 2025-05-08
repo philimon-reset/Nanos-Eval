@@ -55,17 +55,16 @@ def run_benchmark(platform):
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
         for load in LOADS:
-            for _ in range(10):
-                output = run_wrk(TARGETS.get(platform),
-                                 load["connection"], load["duration"])
-                metrics = parse_wrk_output(output)
-                metrics |= {
-                    "connection": load["connection"],
-                    "duration": load["duration"],
-                }
-                if not load.get("warm_up"):
-                    writer.writerow(metrics)
-                time.sleep(1)
+            output = run_wrk(TARGETS.get(platform),
+                             load["connection"], load["duration"])
+            metrics = parse_wrk_output(output)
+            metrics |= {
+                "connection": load["connection"],
+                "duration": load["duration"],
+            }
+            if not load.get("warm_up"):
+                writer.writerow(metrics)
+            time.sleep(1)
     return False
 
 

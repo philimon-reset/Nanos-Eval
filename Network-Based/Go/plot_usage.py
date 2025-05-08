@@ -12,6 +12,7 @@ def convert_latency(val):
             return float(val.replace("ms", ""))  # already ms
     return pd.NA
 
+
 def plot_metric(df1, df2, x_col, y_col, labels, title, ylabel, plot_path):
     """Reusable function to plot a metric."""
     plt.figure(figsize=(12, 6))
@@ -33,7 +34,6 @@ def compare_resource_usage_plot(first_process, second_process):
     first_df = pd.read_csv(first_process[0])
     second_df = pd.read_csv(second_process[0])
 
-
     cpu_plot_path = f"metrics/plots/comparitive/{first_process[1]}_vs_{second_process[1]}_cpu_usage.png"
     plot_metric(
         first_df, second_df,
@@ -45,7 +45,6 @@ def compare_resource_usage_plot(first_process, second_process):
         plot_path=cpu_plot_path
     )
 
-
     memory_plot_path = f"metrics/plots/comparitive/{first_process[1]}_vs_{second_process[1]}_memory_usage.png"
     plot_metric(
         first_df, second_df,
@@ -56,8 +55,6 @@ def compare_resource_usage_plot(first_process, second_process):
         ylabel="Memory Usage (MB)",
         plot_path=memory_plot_path
     )
-
-
 
 
 def plot_webserver_metric(nanos_df, docker_df, field_pair):
@@ -78,7 +75,7 @@ def plot_webserver_metric(nanos_df, docker_df, field_pair):
     nanos_box_plot_path = f"metrics/plots/webserver/box_plot/nanos_{field_pair[0]}.png"
 
     plot_min_mean_max_graph(nanos_data, field_pair[1],  nanos_min_max_path)
-    plot_box_plot(nanos_df, field_pair ,nanos_box_plot_path)
+    plot_box_plot(nanos_df, field_pair, nanos_box_plot_path)
 
     docker_min_max_path = f"metrics/plots/webserver/min_max/docker_{field_pair[0]}.png"
     docker_box_plot_path = f"metrics/plots/webserver/box_plot/docker_{field_pair[0]}.png"
@@ -95,7 +92,8 @@ def plot_box_plot(data, field_pair, path):
 
     # Prepare data: group values by connection count
     connection_levels = [10, 50, 100]
-    data = [data[data["connection"] == level][field_pair[0]].dropna().tolist() for level in connection_levels]
+    data = [data[data["connection"] == level][field_pair[0]].dropna().tolist()
+            for level in connection_levels]
     colors = ['peachpuff', 'orange', 'tomato']
     # Create the box plot
     blt = ax.boxplot(data, tick_labels=connection_levels, patch_artist=True)
@@ -108,6 +106,7 @@ def plot_box_plot(data, field_pair, path):
     plt.savefig(path)
     plt.close()
 
+
 def plot_min_mean_max_graph(data, ylabel, path):
     x = [10, 50, 100]
     y = [float(data[str(val)]['mean']) for val in x]
@@ -117,8 +116,10 @@ def plot_min_mean_max_graph(data, ylabel, path):
     ax.set_xlabel("Concurrent Connections")
     ax.set_ylabel(ylabel)
     ax.set_title(f"Min, Mean, Max Graph of {ylabel}.")
-    error_below = [float(data[str(val)]['mean']) - float(data[str(val)]['min']) for val in x]
-    error_above = [float(data[str(val)]['max']) - float(data[str(val)]['mean']) for val in x]
+    error_below = [float(data[str(val)]['mean']) -
+                   float(data[str(val)]['min']) for val in x]
+    error_above = [float(data[str(val)]['max']) -
+                   float(data[str(val)]['mean']) for val in x]
     error = [error_below, error_above]
 
     ax.errorbar(
@@ -133,15 +134,17 @@ def plot_min_mean_max_graph(data, ylabel, path):
         linestyle="none",
     )
 
-
     plt.savefig(path)
     plt.close()
 
 # Plotting function
+
+
 def plot_bar_with_error(nanos_data, docker_data, field_pair, path):
     platforms = ["Nanos", "Docker"]
     connections = [10, 50, 100]
-    means = {str(k): [nanos_data[str(k)]['mean'], docker_data[str(k)]['mean']] for k in connections}
+    means = {str(k): [nanos_data[str(k)]['mean'],
+                      docker_data[str(k)]['mean']] for k in connections}
     x = np.arange(len(platforms))  # the label locations
     width = 0.25  # the width of the bars
     multiplier = 0
@@ -150,7 +153,8 @@ def plot_bar_with_error(nanos_data, docker_data, field_pair, path):
 
     for attribute, measurement in means.items():
         offset = width * multiplier
-        rects = ax.bar(x + offset, measurement, width, label=f"{attribute} Connections")
+        rects = ax.bar(x + offset, measurement, width,
+                       label=f"{attribute} Connections")
         ax.bar_label(rects, padding=4)
         multiplier += 1
 
@@ -159,7 +163,6 @@ def plot_bar_with_error(nanos_data, docker_data, field_pair, path):
     ax.set_title(f'Mean Latency for {field_pair[1]}')
     ax.set_xticks(x + width, platforms)
     ax.legend(loc='best')
-
 
     plt.savefig(path)
     plt.close()
@@ -174,7 +177,6 @@ def compare_webserver_metrics_plot(nanos_process, docker_process):
     docker_df["requests_per_sec"] = docker_df["requests_per_sec"].astype(float)
     docker_df["latency_avg"] = docker_df["latency_avg"].apply(convert_latency)
 
-
     plot_webserver_metric(
         nanos_df, docker_df,
         field_pair=('requests_per_sec', 'Request per Second')
@@ -187,7 +189,7 @@ def compare_webserver_metrics_plot(nanos_process, docker_process):
 
 
 if __name__ == "__main__":
-    compare_resource_usage_plot((
-        "metrics/docker_usage_log.csv", "docker"), ("metrics/nanos_usage_log.csv", "nanos"))
+    # compare_resource_usage_plot((
+    #     "metrics/docker_usage_log.csv", "docker"), ("metrics/nanos_usage_log.csv", "nanos"))
     compare_webserver_metrics_plot(("metrics/webserver/webserver_metrics_nanos.csv", "nanos"), (
         "metrics/webserver/webserver_metrics_docker.csv", "docker"))

@@ -6,7 +6,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import subprocess
 import docker
-from plot_usage import comparative_plot
 from test_server import run_benchmark
 
 
@@ -137,7 +136,3 @@ if __name__ == "__main__":
     else:
         run_script_and_monitor(nanos_command)
         run_docker_and_monitor("docker")
-    original_process_log = (
-        "metrics/docker_usage_log.csv", "docker")
-    ops_process_log = ("metrics/nanos_usage_log.csv", "nanos")
-    comparative_plot(original_process_log, ops_process_log)
