@@ -9,6 +9,7 @@ def convert_latency(val):
             return float(val.replace("us", "")) / 1000  # µs to ms
         elif val.endswith("ms"):
             return float(val.replace("ms", ""))  # already ms
+        
     return pd.NA
 
 
