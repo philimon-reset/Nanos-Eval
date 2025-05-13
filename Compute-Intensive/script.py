@@ -1,5 +1,6 @@
 # import numpy as np
 import time
+import os
 
 
 # Measure startup time
@@ -31,6 +32,8 @@ if __name__ == "__main__":
 
     # Measure execution time
     execution_time = time.time() - start_time
+
+    os.environ['EXECUTION'] = str(execution_time)
 
     # Print results
     print(f"Execution Time: {execution_time} seconds")

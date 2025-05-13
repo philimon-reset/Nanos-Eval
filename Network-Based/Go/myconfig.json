@@ -3,8 +3,8 @@
     "Verbose": true,
     "Accel": true,
     "Ports": ["8080"],
-    "CPUs": 4,
-    "Memory": "2G"
+    "CPUs": 1,
+    "Memory": "256M"
   },
   "Debugflags": ["trace:pf,threadrun", "debugsyscalls"]
 }

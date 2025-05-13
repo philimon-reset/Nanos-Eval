@@ -8,6 +8,10 @@ import docker
 import os
 from plot_usage import comparative_plot
 
+execution_log = "metrics/execution_time.csv"
+with open(execution_log, "w") as f:
+    f.write("Platform,Time\n")
+
 
 def monitor(start_mem_kb, running_process, process_name):
     start_timestamp = time.time()
@@ -27,6 +31,9 @@ def monitor(start_mem_kb, running_process, process_name):
 
     except psutil.NoSuchProcess as e:
         print(f"Error: {e}")
+
+    with open(execution_log, "a+") as f:
+        f.write(f"{process_name},{time.time() - start_timestamp}\n")
     print(
         f"Monitoring {running_process.is_running()}")
     print(f"✅ Monitoring complete. Log saved to {log_file}")
@@ -104,7 +111,6 @@ def run_script_and_monitor(command):
     else:
         qemu_process_name = "qemu-system-aarch64"
 
-
     qemu_proc = None
     while qemu_proc is None:
         filtered_proc = filter(
@@ -125,6 +131,7 @@ def run_script_and_monitor(command):
 if __name__ == "__main__":
     ops_command = ["ops", "pkg", "load",
                    "eyberg/python:3.10.6", "-c", "myconfig.json"]
+
     if len(sys.argv) > 1:
         command_type = sys.argv[1]
         if command_type == "nanos":

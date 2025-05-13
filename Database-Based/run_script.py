@@ -6,7 +6,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import subprocess
 import docker
-from plot_usage import comparative_plot
 from test_server import run_benchmark
 
 
@@ -49,8 +48,8 @@ def run_docker_and_monitor(process_name, image_name="host_redis_run"):
         image=image_name,
         detach=True,
         remove=True,
-        cpu_count=4,
-        mem_limit="2g",
+        cpu_count=1,
+        mem_limit="256m",
         ports={'6379': '6379'},
         name="sdk_monitor_container"
     )
@@ -138,7 +137,3 @@ if __name__ == "__main__":
     else:
         run_script_and_monitor(ops_command)
         run_docker_and_monitor("docker")
-    original_process_log = (
-        "metrics/docker_usage_log.csv", "docker")
-    nanos_process_log = ("metrics/nanos_usage_log.csv", "nanos")
-    comparative_plot(original_process_log, nanos_process_log)
